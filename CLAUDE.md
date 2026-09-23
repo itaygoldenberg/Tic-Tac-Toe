@@ -24,7 +24,7 @@
 - כל Milestone הוא Vertical Slice: UI + לוגיקה + בדיקות. הבדיקות הן חלק מה־Definition of Done ולא נדחות לסוף.
 - בסיום Milestone יש לעבור על רשימת ה־DoD שלו ולדווח במפורש מה הושלם ומה לא.
 
-**סטטוס נוכחי:** Milestone 1 אושר. Milestone 2 מומש ומחכה לבדיקה ולאישור המפתח. אין להתחיל את Milestone 3 לפני אישור מפורש. (לעדכן שורה זו לאחר אישור כל Milestone.)
+**סטטוס נוכחי:** Milestones 1–2 אושרו. Milestone 3 מומש ומחכה לבדיקה ולאישור המפתח. אין להתחיל את Milestone 4 לפני אישור מפורש. (לעדכן שורה זו לאחר אישור כל Milestone.)
 
 ## Technology Stack (מחייב — אין להחליף)
 
@@ -78,7 +78,9 @@ Routes: `/` Home · `/game` Game · `/about` About — כולם תחת `Layout` 
 - **Computer Player:** Win → Block (בהסתברות) → Center → Corner/Strategic → Random. **אסור Minimax מושלם** — המחשב חייב להיות ניתן לניצחון. רמת קושי אחת, לא חשופה למשתמש. ערכי ההסתברות מוגדרים במקום אחד ב־constants.
 - **Randomness ניתנת להזרקה:** `chooseComputerMove(board, random: RandomFn = Math.random)` — כדי שה־tests יהיו דטרמיניסטיים.
 - **Audio:** צלילים מסונתזים ב־Web Audio API בלבד (ללא קבצי MP3/WAV). `AudioContext` נוצר/מופעל רק אחרי אינטראקציה. כשל Audio לא מפיל את המשחק.
-- **Mute:** State בזיכרון בלבד; חוזר לברירת מחדל ב־Reload.
+- **Mute:** מצב ההשתקה נשמר בזיכרון בלבד, בתוך `audioService` ולא ב־`GameState`. הוא נשמר במעבר בין מסכים וב"משחק חדש", וחוזר ל"פועל" ב־Reload. הצלילים מופעלים מ־`useGameSounds`, שמזהה שינויים במצב המשחק. ה־Reducer לא יודע על Audio.
+- **תאי הלוח חייבים להיות אטומים:** קווי ה־Grid הם רקע ניאון מלא של `.board` שנראה רק ברווחים בין התאים. רקע שקוף או transition על `background` בתא יציג כתם ציאן.
+- **הקו המנצח ב־RTL:** `WinningLine` מחשב קואורדינטות משמאל לימין, ו־CSS הופך אותו אופקית תחת `:dir(rtl)`.
 - **PWA:** `generateSW` בלבד (לא Service Worker ידני), Precache של ה־App Shell, manifest עם `lang: "he"`, `dir: "rtl"`, `display: "standalone"`. אין כפתור Install.
 - **Vercel:** SPA rewrite ל־`index.html` כך ש־`/game` ו־`/about` עובדים ב־Direct Navigation וב־Reload, בלי לשבור static assets.
 

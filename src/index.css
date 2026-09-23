@@ -93,6 +93,34 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Thin neon accents in the background on large screens only (DESIGN.md §2.12). */
+@media (min-width: 900px) {
+    body::before,
+    body::after {
+        content: "";
+        position: fixed;
+        z-index: -1;
+        width: 38vw;
+        height: 2px;
+        pointer-events: none;
+        background: linear-gradient(90deg, transparent, var(--color-neon-blue), transparent);
+        box-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
+        opacity: 0.45;
+    }
+
+    body::before {
+        top: 22%;
+        left: -6vw;
+        transform: rotate(-32deg);
+    }
+
+    body::after {
+        right: -6vw;
+        bottom: 18%;
+        transform: rotate(-32deg);
+    }
+}
+
 h1,
 h2,
 h3,

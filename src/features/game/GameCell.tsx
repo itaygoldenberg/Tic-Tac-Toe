@@ -21,7 +21,7 @@ export default function GameCell({ index, value, disabled, isWinning, onClick }:
             aria-label={label}
             onClick={() => onClick(index)}
         >
-            {value && <Mark player={value} />}
+            {value && <Mark player={value} animated />}
         </button>
     );
 }

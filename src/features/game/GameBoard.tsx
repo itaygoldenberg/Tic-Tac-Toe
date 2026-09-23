@@ -1,5 +1,6 @@
 import type { Board } from "../../game/game.types";
 import GameCell from "./GameCell";
+import WinningLine from "./WinningLine";
 import "../../components/ui/board.css";
 
 interface GameBoardProps {
@@ -22,6 +23,7 @@ export default function GameBoard({ board, disabled, winningCells, onCellClick }
                     onClick={onCellClick}
                 />
             ))}
+            <WinningLine cells={winningCells} />
         </div>
     );
 }

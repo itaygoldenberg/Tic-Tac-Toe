@@ -30,6 +30,45 @@ export function RestartIcon({ className }: IconProps) {
     );
 }
 
+const SPEAKER_PATH = "M4 9.5h3.5L12 5.5v13l-4.5-4H4z";
+
+export function SoundOnIcon({ className }: IconProps) {
+    return (
+        <svg
+            className={className}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            <path d={SPEAKER_PATH} />
+            <path d="M15.5 9a4.5 4.5 0 0 1 0 6" />
+            <path d="M18 6.5a8 8 0 0 1 0 11" />
+        </svg>
+    );
+}
+
+export function SoundOffIcon({ className }: IconProps) {
+    return (
+        <svg
+            className={className}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            <path d={SPEAKER_PATH} />
+            <path d="M16 9.5l5 5M21 9.5l-5 5" />
+        </svg>
+    );
+}
+
 export function GamepadIcon({ className }: IconProps) {
     return (
         <svg

@@ -21,7 +21,9 @@ function getNavLink(name: string) {
 
 describe("screens", () => {
     it("renders the home screen at /", () => {
-        renderAt("/");
+        const { container } = renderAt("/");
+
+        expect(container.querySelector(".decorative-board .mark--animated")).toBeNull();
 
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("איקס עיגול");
         expect(screen.getByText("משחק איקס־עיגול פשוט מול המחשב")).toBeInTheDocument();

@@ -3,6 +3,8 @@ import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import AppRoutes from "../../app/AppRoutes";
 import { COMPUTER_MOVE_DELAY_MS } from "../../game/game.constants";
+import { audioService } from "../../services/audio.service";
+import { FakeAudioContext, resetFakeAudio, totalOscillators } from "../../test/fake-audio-context";
 
 // With Math.random fixed at 0.5 the computer always blocks, never plays randomly,
 // takes the center first and otherwise the middle of the free corners — fully predictable.
@@ -44,14 +46,32 @@ function resultText() {
     return screen.getByRole("status").textContent;
 }
 
+function muteButton() {
+    return screen.getByRole("button", { name: "השתק צלילים" });
+}
+
+function spyOnSounds() {
+    return {
+        x: vi.spyOn(audioService, "playX"),
+        o: vi.spyOn(audioService, "playO"),
+        win: vi.spyOn(audioService, "playWin"),
+        lose: vi.spyOn(audioService, "playLose"),
+        draw: vi.spyOn(audioService, "playDraw")
+    };
+}
+
 beforeEach(() => {
     vi.useFakeTimers();
     vi.spyOn(Math, "random").mockReturnValue(0.5);
+    vi.stubGlobal("AudioContext", FakeAudioContext);
+    resetFakeAudio();
+    audioService.setMuted(false);
 });
 
 afterEach(() => {
     vi.useRealTimers();
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
 });
 
 describe("game screen", () => {
@@ -173,5 +193,170 @@ describe("game screen", () => {
             expect(button).toBeEmptyDOMElement();
         });
         expect(consoleError).not.toHaveBeenCalled();
+    });
+});
+
+describe("visual feedback", () => {
+    it("animates newly placed X and O marks", () => {
+        const { container } = renderGame();
+
+        fireEvent.click(cell(0));
+        waitForComputer();
+
+        expect(cell(0).querySelector("svg")).toHaveClass("mark--x", "mark--animated");
+        expect(cell(4).querySelector("svg")).toHaveClass("mark--o", "mark--animated");
+        expect(container.querySelector(".decorative-board")).toBeNull();
+    });
+
+    it("highlights exactly the three winning cells and draws the winning line", () => {
+        const { container } = renderGame();
+        playMoves([0, 8, 2, 5]);
+
+        const winning = getCells().filter((button) => button.hasAttribute("data-winning"));
+        expect(winning.map((button) => getCells().indexOf(button))).toEqual([2, 5, 8]);
+        expect(container.querySelector(".winning-line")).toHaveAttribute("data-cells", "2,5,8");
+    });
+
+    it("highlights the computer's winning line on a loss", () => {
+        vi.spyOn(Math, "random").mockReturnValue(0.99);
+        const { container } = renderGame();
+        playMoves([1, 2, 3]);
+
+        expect(container.querySelector(".winning-line")).toHaveAttribute("data-cells", "0,4,8");
+    });
+
+    it("shows no highlight during play or on a draw", () => {
+        const { container } = renderGame();
+
+        fireEvent.click(cell(4));
+        expect(container.querySelector(".winning-line")).toBeNull();
+
+        waitForComputer();
+        playMoves([2, 7, 3, 0]);
+        expect(resultText()).toBe("תיקו!");
+        expect(container.querySelector(".winning-line")).toBeNull();
+        expect(container.querySelector("[data-winning]")).toBeNull();
+    });
+
+    it("never shows a turn indicator", () => {
+        renderGame();
+        const turnText = /התור שלך|המחשב חושב/;
+
+        expect(screen.queryByText(turnText)).toBeNull();
+        fireEvent.click(cell(0));
+        expect(screen.queryByText(turnText)).toBeNull();
+        waitForComputer();
+        expect(screen.queryByText(turnText)).toBeNull();
+    });
+});
+
+describe("sound effects", () => {
+    it("plays the X sound on the player's move and the O sound on the computer's move", () => {
+        const sounds = spyOnSounds();
+        renderGame();
+
+        fireEvent.click(cell(0));
+        expect(sounds.x).toHaveBeenCalledTimes(1);
+        expect(sounds.o).not.toHaveBeenCalled();
+
+        waitForComputer();
+        expect(sounds.o).toHaveBeenCalledTimes(1);
+        expect(totalOscillators()).toBeGreaterThan(0);
+    });
+
+    it("plays the win sound when the player wins", () => {
+        const sounds = spyOnSounds();
+        renderGame();
+        playMoves([0, 8, 2, 5]);
+
+        expect(sounds.win).toHaveBeenCalledTimes(1);
+        expect(sounds.lose).not.toHaveBeenCalled();
+        expect(sounds.draw).not.toHaveBeenCalled();
+    });
+
+    it("plays the lose sound when the computer wins", () => {
+        vi.spyOn(Math, "random").mockReturnValue(0.99);
+        const sounds = spyOnSounds();
+        renderGame();
+        playMoves([1, 2, 3]);
+
+        expect(sounds.lose).toHaveBeenCalledTimes(1);
+        expect(sounds.win).not.toHaveBeenCalled();
+    });
+
+    it("plays the draw sound on a draw", () => {
+        const sounds = spyOnSounds();
+        renderGame();
+        playMoves([4, 2, 7, 3, 0]);
+
+        expect(sounds.draw).toHaveBeenCalledTimes(1);
+        expect(sounds.win).not.toHaveBeenCalled();
+        expect(sounds.lose).not.toHaveBeenCalled();
+    });
+
+    it("plays no sound on New Game", () => {
+        renderGame();
+        playMoves([0, 8, 2, 5]);
+        const sounds = spyOnSounds();
+
+        fireEvent.click(screen.getByRole("button", { name: "משחק חדש" }));
+
+        Object.values(sounds).forEach((spy) => expect(spy).not.toHaveBeenCalled());
+    });
+});
+
+describe("mute", () => {
+    it("starts with sound on", () => {
+        renderGame();
+        expect(muteButton()).toHaveAttribute("aria-pressed", "false");
+    });
+
+    it("silences every effect while muted and restores sound on unmute", () => {
+        renderGame();
+
+        fireEvent.click(muteButton());
+        expect(muteButton()).toHaveAttribute("aria-pressed", "true");
+
+        playMoves([0, 8, 2, 5]);
+        expect(resultText()).toBe("ניצחת!");
+        expect(totalOscillators()).toBe(0);
+
+        fireEvent.click(muteButton());
+        expect(muteButton()).toHaveAttribute("aria-pressed", "false");
+
+        fireEvent.click(screen.getByRole("button", { name: "משחק חדש" }));
+        fireEvent.click(cell(0));
+        expect(totalOscillators()).toBeGreaterThan(0);
+    });
+
+    it("keeps the mute choice when leaving and returning to the game screen", () => {
+        renderGame();
+        fireEvent.click(muteButton());
+
+        fireEvent.click(screen.getByRole("link", { name: "בית" }));
+        fireEvent.click(screen.getByRole("link", { name: "משחק" }));
+
+        expect(muteButton()).toHaveAttribute("aria-pressed", "true");
+    });
+
+    it("keeps the mute choice on New Game", () => {
+        renderGame();
+        fireEvent.click(muteButton());
+
+        fireEvent.click(screen.getByRole("button", { name: "משחק חדש" }));
+
+        expect(muteButton()).toHaveAttribute("aria-pressed", "true");
+    });
+
+    it("does not touch browser storage", () => {
+        const setItem = vi.spyOn(Storage.prototype, "setItem");
+        renderGame();
+
+        fireEvent.click(muteButton());
+        playMoves([0, 8, 2, 5]);
+
+        expect(setItem).not.toHaveBeenCalled();
+        expect(localStorage.length).toBe(0);
+        expect(sessionStorage.length).toBe(0);
     });
 });
