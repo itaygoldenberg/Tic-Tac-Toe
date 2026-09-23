@@ -12,6 +12,7 @@ export default function AboutPage() {
 
             <p className="about-page__credit">פותח על ידי איתי גולדנברג</p>
             <hr className="about-page__divider" />
+            <p className="about-page__description">איקס עיגול הוא משחק פשוט ומהנה המותאם לכל גיל</p>
         </section>
     );
 }

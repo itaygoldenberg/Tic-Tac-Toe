@@ -28,6 +28,13 @@
     font-weight: 700;
 }
 
+.about-page__description {
+    max-width: 32ch;
+    margin-top: calc(var(--space-2) * -1);
+    font-size: var(--font-size-body);
+    color: var(--color-text-secondary);
+}
+
 .about-page__divider {
     width: 120px;
     height: 2px;

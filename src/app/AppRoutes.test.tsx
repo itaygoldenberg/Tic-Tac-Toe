@@ -45,6 +45,7 @@ describe("screens", () => {
 
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("אודות");
         expect(screen.getByText("פותח על ידי איתי גולדנברג")).toBeInTheDocument();
+        expect(screen.getByText("איקס עיגול הוא משחק פשוט ומהנה המותאם לכל גיל")).toBeInTheDocument();
     });
 
     it("redirects unknown routes to the home screen", () => {
