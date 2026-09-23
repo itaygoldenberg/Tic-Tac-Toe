@@ -163,3 +163,17 @@
 .btn--primary:hover {
     box-shadow: var(--glow-blue-strong);
 }
+
+.btn--secondary {
+    min-width: min(100%, 220px);
+    min-height: 52px;
+    font-size: var(--font-size-body);
+    background: linear-gradient(180deg, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.9));
+    border: 1px solid rgba(0, 229, 255, 0.55);
+    box-shadow: var(--glow-blue-soft);
+}
+
+.btn--secondary:hover {
+    border-color: var(--color-neon-blue);
+    box-shadow: var(--glow-blue);
+}

@@ -1,19 +1,29 @@
 import NeonTitle from "../../components/ui/NeonTitle";
-import type { Board } from "../../game/game.types";
 import GameBoard from "./GameBoard";
+import GameResult from "./GameResult";
+import NewGameButton from "./NewGameButton";
+import { useGame } from "./useGame";
 import "./game.css";
 
-// Game state and interaction arrive in Milestone 2; for now the board is a static, locked grid.
-const EMPTY_BOARD: Board = [null, null, null, null, null, null, null, null, null];
-
 export default function GamePage() {
+    const { state, playCell, newGame } = useGame();
+    const isBoardLocked = state.isComputerTurn || state.status !== "playing";
+
     return (
         <section className="page game-page">
             <header className="page__header">
                 <NeonTitle />
+                <GameResult status={state.status} />
             </header>
 
-            <GameBoard board={EMPTY_BOARD} disabled winningCells={[]} onCellClick={() => {}} />
+            <GameBoard
+                board={state.board}
+                disabled={isBoardLocked}
+                winningCells={state.winningCells}
+                onCellClick={playCell}
+            />
+
+            <NewGameButton onClick={newGame} />
         </section>
     );
 }

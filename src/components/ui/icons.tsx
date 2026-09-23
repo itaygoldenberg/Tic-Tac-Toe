@@ -10,6 +10,26 @@ export function PlayIcon({ className }: IconProps) {
     );
 }
 
+export function RestartIcon({ className }: IconProps) {
+    return (
+        <svg
+            className={className}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            <path d="M20 12a8 8 0 0 1-14.3 4.9" />
+            <path d="M4 12A8 8 0 0 1 18.3 7.1" />
+            <path d="M18.5 3v4.3h-4.3" />
+            <path d="M5.5 21v-4.3h4.3" />
+        </svg>
+    );
+}
+
 export function GamepadIcon({ className }: IconProps) {
     return (
         <svg

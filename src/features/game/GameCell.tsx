@@ -17,7 +17,7 @@ export default function GameCell({ index, value, disabled, isWinning, onClick }:
             type="button"
             className="board__cell game-cell"
             data-winning={isWinning || undefined}
-            disabled={disabled}
+            disabled={disabled || value !== null}
             aria-label={label}
             onClick={() => onClick(index)}
         >

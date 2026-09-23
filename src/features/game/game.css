@@ -1,5 +1,27 @@
 .game-page {
-    gap: var(--space-4);
+    gap: var(--space-3);
+}
+
+/* Height is reserved so the board does not shift when the result appears. */
+.game-result {
+    min-height: 1.4em;
+    font-size: var(--font-size-h2);
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.game-result[data-status="playerWon"] {
+    color: var(--color-neon-blue);
+    text-shadow: var(--text-glow-blue);
+}
+
+.game-result[data-status="computerWon"] {
+    color: var(--color-neon-red);
+    text-shadow: var(--text-glow-red);
+}
+
+.game-result[data-status="draw"] {
+    color: var(--color-white);
 }
 
 .game-board {
