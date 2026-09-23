@@ -4,7 +4,14 @@ import { VitePWA } from "vite-plugin-pwa";
 
 const APP_BACKGROUND = "#0B0F1A";
 
+// "/" locally and on Vercel; a sub-path such as "/Tic-Tac-Toe/" for GitHub Pages (see scripts/deploy-gh-pages.mjs).
+const BASE = process.env.BASE_PATH ?? "/";
+if (!BASE.startsWith("/") || !BASE.endsWith("/")) {
+    throw new Error(`BASE_PATH must start and end with "/", got "${BASE}"`);
+}
+
 export default defineConfig({
+    base: BASE,
     plugins: [
         react(),
         // Service worker is generated at build time only; `npm run dev` runs without it.
@@ -15,21 +22,26 @@ export default defineConfig({
             // Icons and favicons are already matched by workbox.globPatterns; avoid duplicate precache entries.
             includeManifestIcons: false,
             manifest: {
-                id: "/",
+                id: BASE,
                 name: "איקס עיגול",
                 short_name: "איקס עיגול",
                 description: "משחק איקס־עיגול פשוט מול המחשב",
                 lang: "he",
                 dir: "rtl",
-                start_url: "/",
-                scope: "/",
+                start_url: BASE,
+                scope: BASE,
                 display: "standalone",
                 theme_color: APP_BACKGROUND,
                 background_color: APP_BACKGROUND,
                 icons: [
-                    { src: "/pwa-192x192.png", sizes: "192x192", type: "image/png" },
-                    { src: "/pwa-512x512.png", sizes: "512x512", type: "image/png" },
-                    { src: "/maskable-icon-512x512.png", sizes: "512x512", type: "image/png", purpose: "maskable" }
+                    { src: `${BASE}pwa-192x192.png`, sizes: "192x192", type: "image/png" },
+                    { src: `${BASE}pwa-512x512.png`, sizes: "512x512", type: "image/png" },
+                    {
+                        src: `${BASE}maskable-icon-512x512.png`,
+                        sizes: "512x512",
+                        type: "image/png",
+                        purpose: "maskable"
+                    }
                 ]
             },
             workbox: {

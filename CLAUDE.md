@@ -45,7 +45,16 @@ npm run typecheck  # tsc --noEmit
 npm test           # Vitest (חד-פעמי); npm run test:watch למצב watch
 npm run test:e2e   # Playwright — בונה ומריץ preview על פורט 4173, פרויקטים desktop-chrome ו-mobile-chrome
 npm run icons      # מייצר מחדש את אייקוני ה-PWA וה-favicons ב-public/ מתוך scripts/generate-pwa-icons.mjs
+npm run deploy:pages  # build עם base /<repo>/ ופרסום dist/ לענף gh-pages (GitHub Pages)
 ```
+
+**GitHub Pages:** נוסף ב־23.09.2026 לבקשת המפתח, בנוסף ל־Vercel שמוגדר ב־ARCHITECTURE.
+- האתר: https://itaygoldenberg.github.io/Tic-Tac-Toe/
+- ה־base נקבע ממשתנה הסביבה `BASE_PATH`. ברירת המחדל היא `/`, שמשמשת לפיתוח, לבדיקות ול־Vercel. ה־router, ה־manifest וה־SW נגזרים מה־base.
+- **אסור לכתוב נתיבים מוחלטים שמתחילים ב־`/` בקוד האפליקציה.** צריך להשתמש ב־`import.meta.env.BASE_URL`, או לתת ל־Vite ול־React Router לטפל בנתיב.
+- ל־GitHub Pages אין SPA rewrites, ולכן סקריפט הפריסה מעתיק את `index.html` ל־`404.html`.
+- הפריסה היא ידנית, דרך `npm run deploy:pages`. לפריסה אוטומטית עם GitHub Actions ה־token של `gh` צריך scope בשם `workflow` (`gh auth refresh -s workflow`).
+- ב־Git Bash יש להגדיר `MSYS_NO_PATHCONV=1` כשמעבירים `BASE_PATH`, אחרת MSYS הופך אותו לנתיב Windows.
 
 הרצת בדיקה בודדת: `npx vitest run src/app/AppRoutes.test.tsx` או `npx playwright test -g "<שם הבדיקה>"`.
 בדיקות Unit ו־Integration נמצאות לצד הקוד (`*.test.tsx`), ובדיקות E2E בתיקייה `e2e/`. עזרים משותפים ל־E2E נמצאים ב־`e2e/helpers.ts`, כולל `makeComputerPredictable`, שקובע את `Math.random`.
