@@ -1,0 +1,38 @@
+.about-page {
+    justify-content: center;
+    gap: var(--space-4);
+    padding-block: var(--space-2);
+}
+
+.about-page__emblem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, rgba(0, 123, 255, 0.28), rgba(11, 15, 26, 0.9) 70%);
+    border: 2px solid rgba(0, 229, 255, 0.7);
+    border-radius: 50%;
+    box-shadow: var(--glow-blue);
+}
+
+.about-page__icon {
+    width: 76px;
+    height: 76px;
+    color: var(--color-white);
+    filter: drop-shadow(0 0 4px var(--color-neon-blue)) drop-shadow(0 0 10px var(--color-electric-blue));
+}
+
+.about-page__credit {
+    font-size: clamp(1.25rem, 1rem + 1.2vw, 1.625rem);
+    font-weight: 700;
+}
+
+.about-page__divider {
+    width: 120px;
+    height: 2px;
+    margin: calc(var(--space-2) * -1) 0 0;
+    background: var(--color-neon-blue);
+    border: 0;
+    box-shadow: var(--glow-blue);
+}

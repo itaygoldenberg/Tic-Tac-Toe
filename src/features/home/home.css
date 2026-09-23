@@ -1,0 +1,30 @@
+.home-page {
+    justify-content: center;
+    gap: var(--space-4);
+}
+
+.decorative-board {
+    --board-size: min(100%, 280px);
+}
+
+.decorative-board__line {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.decorative-board__line line {
+    stroke: #bdf6ff;
+    stroke-width: 3;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    filter: drop-shadow(0 0 4px var(--color-neon-blue)) drop-shadow(0 0 10px var(--color-electric-blue));
+}
+
+@media (min-width: 600px) {
+    .decorative-board {
+        --board-size: 300px;
+    }
+}

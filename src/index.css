@@ -1,0 +1,129 @@
+/* Heebo is self-hosted so the app keeps its typography offline. */
+@font-face {
+    font-family: "Heebo";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("./assets/fonts/heebo-hebrew.woff2") format("woff2");
+    unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+
+@font-face {
+    font-family: "Heebo";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("./assets/fonts/heebo-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+        U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+    /* Colors — DESIGN.md §2.2 */
+    --color-neon-blue: #00e5ff;
+    --color-electric-blue: #007bff;
+    --color-neon-red: #ff2d55;
+    --color-soft-red: #ff4757;
+    --color-white: #ffffff;
+    --color-bg: #0b0f1a;
+    --color-card: #111827;
+    --color-surface: #1f2937;
+    --color-border: #2d3b55;
+    --color-text-secondary: #94a3b8;
+
+    /* Glow — DESIGN.md §2.11 */
+    --glow-blue-soft: 0 0 12px rgba(0, 229, 255, 0.25);
+    --glow-blue: 0 0 8px rgba(0, 229, 255, 0.55), 0 0 24px rgba(0, 123, 255, 0.45);
+    --glow-blue-strong: 0 0 10px rgba(0, 229, 255, 0.8), 0 0 32px rgba(0, 123, 255, 0.6);
+    --glow-red: 0 0 8px rgba(255, 45, 85, 0.7), 0 0 20px rgba(255, 45, 85, 0.45);
+    --text-glow-blue: 0 0 6px rgba(0, 229, 255, 0.8), 0 0 18px rgba(0, 123, 255, 0.7);
+    --text-glow-red: 0 0 6px rgba(255, 45, 85, 0.8), 0 0 18px rgba(255, 45, 85, 0.6);
+    --shadow-card: 0 16px 40px rgba(0, 0, 0, 0.55);
+
+    /* Spacing — 8px system, DESIGN.md §2.10 */
+    --space-1: 8px;
+    --space-2: 16px;
+    --space-3: 24px;
+    --space-4: 32px;
+    --space-6: 48px;
+
+    /* Radius — DESIGN.md §2.9 */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+
+    /* Typography — DESIGN.md §2.3 */
+    --font-family: "Heebo", "Segoe UI", Arial, sans-serif;
+    --font-size-h1: clamp(2.25rem, 1.6rem + 3vw, 3rem);
+    --font-size-h2: clamp(1.625rem, 1.3rem + 1.5vw, 2rem);
+    --font-size-h3: 1.25rem;
+    --font-size-body: 1rem;
+    --font-size-small: 0.875rem;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    direction: rtl;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    font-family: var(--font-family);
+    font-size: var(--font-size-body);
+    line-height: 1.5;
+    color: var(--color-white);
+    background-color: var(--color-bg);
+    background-image:
+        radial-gradient(circle at 50% 0%, rgba(0, 123, 255, 0.16), transparent 60%),
+        radial-gradient(rgba(148, 163, 184, 0.14) 1px, transparent 1px);
+    background-size:
+        100% 100%,
+        24px 24px;
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin: 0;
+}
+
+a {
+    color: inherit;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+}
+
+svg {
+    display: block;
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-neon-blue);
+    outline-offset: 3px;
+    box-shadow: var(--glow-blue);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

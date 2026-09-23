@@ -1,0 +1,30 @@
+.game-page {
+    gap: var(--space-4);
+}
+
+.game-board {
+    --board-size: min(100%, 340px);
+}
+
+.game-cell {
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+}
+
+.game-cell:disabled {
+    cursor: default;
+}
+
+.game-cell:not(:disabled):hover {
+    box-shadow: inset 0 0 16px rgba(0, 229, 255, 0.35);
+}
+
+.game-cell:focus-visible {
+    outline-offset: -4px;
+}
+
+@media (min-width: 600px) {
+    .game-board {
+        --board-size: 380px;
+    }
+}
