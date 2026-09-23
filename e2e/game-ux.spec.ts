@@ -1,38 +1,19 @@
 import { expect, test, type Page } from "@playwright/test";
+import { WINNING_SEQUENCE, board, makeComputerPredictable, playCell } from "./helpers";
 
-// Fixing Math.random makes the computer predictable: it always blocks, never plays randomly,
-// takes the center first and otherwise the middle free corner.
 test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => {
-        Math.random = () => 0.5;
-    });
+    await makeComputerPredictable(page);
 });
-
-function board(page: Page) {
-    return page.getByRole("group", { name: "לוח המשחק" });
-}
 
 function muteButton(page: Page) {
     return page.getByRole("button", { name: "השתק צלילים" });
-}
-
-async function playCell(page: Page, cellNumber: number) {
-    const oCount = await board(page).getByRole("button", { name: /O$/ }).count();
-    await board(page).getByRole("button", { name: `תא ${cellNumber}, ריק` }).click();
-
-    // Wait for the computer's answer unless the move ended the game.
-    await expect(async () => {
-        const answered = (await board(page).getByRole("button", { name: /O$/ }).count()) > oCount;
-        const over = ((await page.getByRole("status").textContent()) ?? "") !== "";
-        expect(answered || over).toBe(true);
-    }).toPass();
 }
 
 test("winning highlights the three cells and draws the winning line", async ({ page }) => {
     await page.goto("/game");
 
     // X1, O5, X9, O7, X3 (block), O2 (block), X6 → cells 3-6-9.
-    for (const cellNumber of [1, 9, 3, 6]) await playCell(page, cellNumber);
+    for (const cellNumber of WINNING_SEQUENCE) await playCell(page, cellNumber);
 
     await expect(page.getByRole("status")).toHaveText("ניצחת!");
     const winningCells = board(page).locator("[data-winning]");

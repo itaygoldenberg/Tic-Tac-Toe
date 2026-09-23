@@ -24,7 +24,7 @@
 - כל Milestone הוא Vertical Slice: UI + לוגיקה + בדיקות. הבדיקות הן חלק מה־Definition of Done ולא נדחות לסוף.
 - בסיום Milestone יש לעבור על רשימת ה־DoD שלו ולדווח במפורש מה הושלם ומה לא.
 
-**סטטוס נוכחי:** Milestones 1–2 אושרו. Milestone 3 מומש ומחכה לבדיקה ולאישור המפתח. אין להתחיל את Milestone 4 לפני אישור מפורש. (לעדכן שורה זו לאחר אישור כל Milestone.)
+**סטטוס נוכחי:** Milestones 1–3 אושרו. Milestone 4 מומש ומחכה לבדיקה ולאישור המפתח. אין להתחיל את Milestone 5 לפני אישור מפורש. (לעדכן שורה זו לאחר אישור כל Milestone.)
 
 ## Technology Stack (מחייב — אין להחליף)
 
@@ -44,10 +44,15 @@ npm run preview    # הרצת ה-build (נדרש לבדיקת Service Worker / O
 npm run typecheck  # tsc --noEmit
 npm test           # Vitest (חד-פעמי); npm run test:watch למצב watch
 npm run test:e2e   # Playwright — בונה ומריץ preview על פורט 4173, פרויקטים desktop-chrome ו-mobile-chrome
+npm run icons      # מייצר מחדש את אייקוני ה-PWA וה-favicons ב-public/ מתוך scripts/generate-pwa-icons.mjs
 ```
 
 הרצת בדיקה בודדת: `npx vitest run src/app/AppRoutes.test.tsx` או `npx playwright test -g "<שם הבדיקה>"`.
-בדיקות Unit ו־Integration נמצאות לצד הקוד (`*.test.tsx`), ובדיקות E2E בתיקייה `e2e/`.
+בדיקות Unit ו־Integration נמצאות לצד הקוד (`*.test.tsx`), ובדיקות E2E בתיקייה `e2e/`. עזרים משותפים ל־E2E נמצאים ב־`e2e/helpers.ts`, כולל `makeComputerPredictable`, שקובע את `Math.random`.
+
+**PWA:** ה־Service Worker נוצר רק ב־build, והוא כבוי ב־`npm run dev`. PWA ו־Offline בודקים מול `npm run build` ו־`npm run preview`. אל תשאיר preview פתוח על פורט 4173, כי Playwright ימחזר אותו עם build ישן. לבדיקה ידנית יש הגדרת `preview` על פורט 4174 ב־`.claude/launch.json`.
+ה־precache כולל את `woff2`, `png`, `svg` ו־`ico` דרך `workbox.globPatterns`. ההגדרה `includeManifestIcons: false` מונעת רשומות כפולות. ההגדרה `clientsClaim: true` נדרשת כדי שהדף יעבוד Offline כבר מהביקור הראשון.
+האייקונים הם קבצים שנוצרים מסקריפט. לשינוי עיצוב האייקון, עורכים את `iconSvg` בסקריפט ומריצים `npm run icons`.
 
 ## מבנה תיקיות
 
